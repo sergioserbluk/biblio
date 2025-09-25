@@ -1,13 +1,18 @@
 <?php
-$host = "localhost";
-$user = "root";   // usuario de MySQL (por defecto en XAMPP es root)
-$pass = "";       // contraseña vacía si no la configuraste
-$db   = "biblioteca";  // nombre de tu base de datos
+// Datos de conexión a la base de datos
+$host = "localhost";   // Servidor local (XAMPP usa localhost)
+$usuario = "root";     // Usuario por defecto en XAMPP
+$clave = "";           // Contraseña (vacía por defecto en XAMPP)
+$base_datos = "biblioteca"; // Nombre de la base que creaste
 
-$conexion = new mysqli($host, $user, $pass, $db);
+// Crear conexión
+$conexion = new mysqli($host, $usuario, $clave, $base_datos);
 
+// Verificar conexión
 if ($conexion->connect_error) {
-    die("Error de conexión: " . $conexion->connect_error);
+    die("❌ Error en la conexión: " . $conexion->connect_error);
 }
-?>
 
+// Si llega hasta aquí, la conexión fue exitosa
+// Podés usar esta variable $conexion en tus consultas SQL
+?>
