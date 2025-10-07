@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 24-09-2025 a las 03:47:11
+-- Tiempo de generación: 07-10-2025 a las 21:33:15
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -33,6 +33,17 @@ CREATE TABLE `autores` (
   `apellido` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `autores`
+--
+
+INSERT INTO `autores` (`id_autor`, `nombre`, `apellido`) VALUES
+(1, 'Gabriel', 'García Márquez'),
+(2, 'Julio', 'Cortázar'),
+(3, 'Jorge Luis', 'Borges'),
+(4, 'Isabel', 'Allende'),
+(5, 'Mario', 'Vargas LLosa');
+
 -- --------------------------------------------------------
 
 --
@@ -43,6 +54,17 @@ CREATE TABLE `editoriales` (
   `id_editorial` int(11) NOT NULL,
   `nombre` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `editoriales`
+--
+
+INSERT INTO `editoriales` (`id_editorial`, `nombre`) VALUES
+(1, 'Planeta'),
+(2, 'Alfaguara'),
+(3, 'Anagrama'),
+(4, 'Santillana'),
+(5, 'Siglo XXI');
 
 -- --------------------------------------------------------
 
@@ -58,6 +80,17 @@ CREATE TABLE `ejemplares` (
   `observacion` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `ejemplares`
+--
+
+INSERT INTO `ejemplares` (`id_ejemplar`, `isbn`, `disponibe`, `estado`, `observacion`) VALUES
+(1, '978-84-376-0494-9', 1, 'activo', 'Sin observaciones'),
+(2, '978-950-511-308-7', 1, 'activo', 'Copia en perfecto estado'),
+(3, '978-987-1138-37-1', 0, 'bajo', 'Cubierta desgastada'),
+(4, '978-950-07-2253-5', 1, 'activo', 'Nuevo ingreso'),
+(5, '978-84-375-1000-1', 1, 'activo', 'Páginas sueltas');
+
 -- --------------------------------------------------------
 
 --
@@ -69,6 +102,17 @@ CREATE TABLE `generos` (
   `nombre` varchar(100) NOT NULL,
   `descripcion` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `generos`
+--
+
+INSERT INTO `generos` (`id_genero`, `nombre`, `descripcion`) VALUES
+(1, 'Novela', 'Narrativa extensa en prosa'),
+(2, 'Cuento', 'Relato Breve de ficción'),
+(3, 'Poesía', 'Expresiones literariasen verso'),
+(4, 'Ensayo', 'Obra en prosa de carácter analítico'),
+(5, 'Teatro', 'Obra escrita para ser representada');
 
 -- --------------------------------------------------------
 
@@ -85,6 +129,17 @@ CREATE TABLE `prestamos` (
   `devuelto` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `prestamos`
+--
+
+INSERT INTO `prestamos` (`id_prestamo`, `dni`, `fehca_prestamo`, `id_ejemplar`, `fecha_devolucion`, `devuelto`) VALUES
+(1, '12345678', '2025-09-01', 1, '2025-09-15', 1),
+(2, '22334455', '2025-09-05', 2, '2025-09-19', 0),
+(3, '44556677', '2025-09-10', 3, '2025-09-24', 0),
+(4, '55667788', '2025-09-12', 4, '2025-09-26', 1),
+(5, '33445566', '2025-09-15', 5, '2025-09-29', 0);
+
 -- --------------------------------------------------------
 
 --
@@ -100,6 +155,17 @@ CREATE TABLE `socios` (
   `domicilio` varchar(200) NOT NULL,
   `vigente` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `socios`
+--
+
+INSERT INTO `socios` (`dni`, `nombre`, `apellido`, `telefono`, `correo`, `domicilio`, `vigente`) VALUES
+('12345678', 'Ana', 'Pérez', '11123456789', 'ana.perez@gmail.com', 'Calle 1', 1),
+('22334455', 'Luis', 'Gomez', '1122334455', 'luis.gomez@gmail.com', 'Calle 2', 1),
+('33445566', 'Maria', 'Fernández', '1133445566', 'maria.fernandez@gmail.com', 'Calle 3', 0),
+('44556677', 'Carlos', 'Ruiz', '1144556677', 'carlos.ruiz@gmail.com', 'Calle 4', 1),
+('55667788', 'Laura', 'Martínez', '1155667788', 'laura.martinez@gmail.com', 'Calle 5', 1);
 
 -- --------------------------------------------------------
 
@@ -120,6 +186,17 @@ CREATE TABLE `titulos` (
   `encuadernacion` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `titulos`
+--
+
+INSERT INTO `titulos` (`isbn`, `nombre`, `descripcion`, `resumen`, `anio_publicacion`, `editorial_id`, `genero_id`, `cantidad`, `edicion`, `encuadernacion`) VALUES
+('978-84-375-1000-1', 'La ciudad y los perros', 'Novela realista', 'Vida militar en un colegio de Lima', '1963', 5, 1, 3, '1ra', 'Rústica'),
+('978-84-376-0494-9', 'Cien años de soledad', 'Novela emblemática del realismo mágico', 'La historia de la familia Buendía en macondo', '1967', 1, 1, 5, '1era', 'Tapa dura'),
+('978-950-07-2253-5', 'La casa de los espíritus', 'Novela familiar y política', 'La historia de la familia Trueba', '1982', 4, 1, 7, '4ta', 'Tapa dura'),
+('978-950-511-308-7', 'Rayuela', 'Novela experimental', 'Una historia que puede leerse de múltiples maneras', '1963', 2, 1, 4, '2da', 'Rústica'),
+('978-987-1138-37-1', 'Ficciones', 'Colección de cuentos', 'Cuentos fantásticos y filosóficos', '1944', 3, 2, 6, '3ra', 'Tapa dura');
+
 -- --------------------------------------------------------
 
 --
@@ -131,6 +208,17 @@ CREATE TABLE `titulosyautores` (
   `autor_id` int(11) DEFAULT NULL,
   `isbn` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `titulosyautores`
+--
+
+INSERT INTO `titulosyautores` (`id_titulo`, `autor_id`, `isbn`) VALUES
+(1, 1, '978-84-376-0494-9'),
+(2, 2, '978-950-511-308-7'),
+(3, 3, '978-987-1138-37-1'),
+(4, 4, '978-950-07-2253-5'),
+(5, 5, '978-84-375-1000-1');
 
 --
 -- Índices para tablas volcadas
