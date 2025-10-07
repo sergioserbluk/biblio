@@ -1,4 +1,8 @@
 <?php
-include("../bd/conexion.php");
-echo "Base de datos conectada correctamente";
+require_once __DIR__ . "/../scripts/conexion.php";
+
+if ($conn) {
+    echo "✅ Conexión exitosa a la base de datos 'biblioteca'.";
+}
 ?>
+
