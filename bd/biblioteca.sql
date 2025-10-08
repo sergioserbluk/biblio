@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 08-10-2025 a las 14:28:15
+-- Tiempo de generación: 08-10-2025 a las 21:43:38
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -124,7 +124,7 @@ INSERT INTO `generos` (`id_genero`, `nombre`, `descripcion`) VALUES
 CREATE TABLE `prestamos` (
   `id_prestamo` int(11) NOT NULL,
   `dni` varchar(15) DEFAULT NULL,
-  `fehca_prestamo` date NOT NULL,
+  `fecha_prestamo` date NOT NULL,
   `id_ejemplar` int(11) DEFAULT NULL,
   `fecha_devolucion` date NOT NULL,
   `devuelto` tinyint(1) NOT NULL
@@ -134,7 +134,7 @@ CREATE TABLE `prestamos` (
 -- Volcado de datos para la tabla `prestamos`
 --
 
-INSERT INTO `prestamos` (`id_prestamo`, `dni`, `fehca_prestamo`, `id_ejemplar`, `fecha_devolucion`, `devuelto`) VALUES
+INSERT INTO `prestamos` (`id_prestamo`, `dni`, `fecha_prestamo`, `id_ejemplar`, `fecha_devolucion`, `devuelto`) VALUES
 (1, '12345678', '2025-09-01', 1, '2025-09-15', 1),
 (2, '22334455', '2025-09-05', 2, '2025-09-19', 0),
 (3, '44556677', '2025-09-10', 3, '2025-09-24', 0),
