@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 07-10-2025 a las 21:33:15
+-- Tiempo de generación: 08-10-2025 a las 14:28:15
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -75,6 +75,7 @@ INSERT INTO `editoriales` (`id_editorial`, `nombre`) VALUES
 CREATE TABLE `ejemplares` (
   `id_ejemplar` int(11) NOT NULL,
   `isbn` varchar(20) NOT NULL,
+  `disponible` tinyint(1) NOT NULL DEFAULT 1,
   `disponibe` tinyint(1) NOT NULL,
   `estado` enum('bajo','activo','','') NOT NULL,
   `observacion` text NOT NULL
@@ -84,12 +85,12 @@ CREATE TABLE `ejemplares` (
 -- Volcado de datos para la tabla `ejemplares`
 --
 
-INSERT INTO `ejemplares` (`id_ejemplar`, `isbn`, `disponibe`, `estado`, `observacion`) VALUES
-(1, '978-84-376-0494-9', 1, 'activo', 'Sin observaciones'),
-(2, '978-950-511-308-7', 1, 'activo', 'Copia en perfecto estado'),
-(3, '978-987-1138-37-1', 0, 'bajo', 'Cubierta desgastada'),
-(4, '978-950-07-2253-5', 1, 'activo', 'Nuevo ingreso'),
-(5, '978-84-375-1000-1', 1, 'activo', 'Páginas sueltas');
+INSERT INTO `ejemplares` (`id_ejemplar`, `isbn`, `disponible`, `disponibe`, `estado`, `observacion`) VALUES
+(1, '978-84-376-0494-9', 1, 1, 'activo', 'Sin observaciones'),
+(2, '978-950-511-308-7', 1, 1, 'activo', 'Copia en perfecto estado'),
+(3, '978-987-1138-37-1', 1, 0, 'bajo', 'Cubierta desgastada'),
+(4, '978-950-07-2253-5', 1, 1, 'activo', 'Nuevo ingreso'),
+(5, '978-84-375-1000-1', 1, 1, 'activo', 'Páginas sueltas');
 
 -- --------------------------------------------------------
 
