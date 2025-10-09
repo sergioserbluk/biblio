@@ -37,11 +37,11 @@ $pdf = new FPDF();
 $pdf->AddPage();
 
 // Encabezado del comprobante
-$pdf->SetFont('Arial', 'B', 16);
+$pdf->SetFont('Helvetica', 'B', 16);
 $pdf->Cell(0, 10, 'Comprobante de Pago de Multa', 0, 1, 'C');
 $pdf->Ln(10);
 
-$pdf->SetFont('Arial', '', 12);
+$pdf->SetFont('Helvetica', '', 12);
 $pdf->Cell(0, 10, "DNI del socio: " . $multa['dni'], 0, 1);
 $pdf->Cell(0, 10, "Monto pagado: $" . $multa['monto'], 0, 1);
 $pdf->Cell(0, 10, "Fecha de pago: " . date('d/m/Y'), 0, 1);

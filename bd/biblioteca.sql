@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 09-10-2025 a las 16:49:33
+-- Tiempo de generación: 09-10-2025 a las 22:42:59
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -86,9 +86,9 @@ CREATE TABLE `ejemplares` (
 --
 
 INSERT INTO `ejemplares` (`id_ejemplar`, `isbn`, `disponible`, `disponibe`, `estado`, `observacion`) VALUES
-(1, '978-84-376-0494-9', 1, 1, 'activo', 'Sin observaciones'),
+(1, '978-84-376-0494-9', 0, 1, 'activo', 'Sin observaciones'),
 (2, '978-950-511-308-7', 0, 1, 'activo', 'Copia en perfecto estado'),
-(3, '978-987-1138-37-1', 0, 0, 'bajo', 'Cubierta desgastada'),
+(3, '978-987-1138-37-1', 1, 0, 'bajo', 'Cubierta desgastada'),
 (4, '978-950-07-2253-5', 0, 1, 'activo', 'Nuevo ingreso'),
 (5, '978-84-375-1000-1', 1, 1, 'activo', 'Páginas sueltas');
 
@@ -136,7 +136,8 @@ CREATE TABLE `multas` (
 --
 
 INSERT INTO `multas` (`id_multa`, `dni`, `id_prestamo`, `monto`, `fecha_generada`, `estado`, `fecha_pago`) VALUES
-(1, '44556677', 3, 2500.00, '2025-10-08', 'Pagada', '2025-10-09');
+(1, '44556677', 3, 2500.00, '2025-10-08', 'Pendiente', '2025-10-09'),
+(2, '44556677', 3, 2000.00, '2025-10-09', 'Pagada', NULL);
 
 -- --------------------------------------------------------
 
@@ -150,6 +151,7 @@ CREATE TABLE `prestamos` (
   `fecha_prestamo` date NOT NULL,
   `id_ejemplar` int(11) DEFAULT NULL,
   `fecha_devolucion` date NOT NULL,
+  `fecha_devolucion_real` date DEFAULT NULL,
   `devuelto` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -157,14 +159,15 @@ CREATE TABLE `prestamos` (
 -- Volcado de datos para la tabla `prestamos`
 --
 
-INSERT INTO `prestamos` (`id_prestamo`, `dni`, `fecha_prestamo`, `id_ejemplar`, `fecha_devolucion`, `devuelto`) VALUES
-(1, '12345678', '2025-10-08', 2, '2025-10-23', 0),
-(2, '22334455', '2025-09-05', 2, '2025-09-19', 0),
-(3, '44556677', '2025-09-09', 3, '2025-09-19', 0),
-(4, '55667788', '2025-09-12', 4, '2025-09-26', 1),
-(5, '33445566', '2025-09-15', 5, '2025-09-29', 0),
-(6, '44556677', '2025-10-09', 3, '2025-10-24', 0),
-(7, '12345678', '2025-10-09', 4, '2025-10-24', 0);
+INSERT INTO `prestamos` (`id_prestamo`, `dni`, `fecha_prestamo`, `id_ejemplar`, `fecha_devolucion`, `fecha_devolucion_real`, `devuelto`) VALUES
+(1, '12345678', '2025-10-08', 2, '2025-10-23', NULL, 0),
+(2, '22334455', '2025-09-05', 2, '2025-09-19', NULL, 0),
+(3, '44556677', '2025-09-09', 3, '2025-09-19', '2025-10-09', 1),
+(4, '55667788', '2025-09-12', 4, '2025-09-26', NULL, 1),
+(5, '33445566', '2025-09-15', 5, '2025-09-29', NULL, 0),
+(6, '44556677', '2025-10-09', 3, '2025-10-24', NULL, 0),
+(7, '12345678', '2025-10-09', 4, '2025-10-24', NULL, 0),
+(8, '55667788', '2025-10-09', 1, '2025-10-24', NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -321,13 +324,13 @@ ALTER TABLE `titulosyautores`
 -- AUTO_INCREMENT de la tabla `multas`
 --
 ALTER TABLE `multas`
-  MODIFY `id_multa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_multa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `prestamos`
 --
 ALTER TABLE `prestamos`
-  MODIFY `id_prestamo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id_prestamo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- Restricciones para tablas volcadas
