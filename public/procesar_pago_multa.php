@@ -1,3 +1,4 @@
+
 <?php
 require_once __DIR__ . "/../scripts/conexion.php";
 require_once __DIR__ . "/../scripts/fpdf.php";
@@ -19,8 +20,12 @@ if ($res->num_rows === 0) {
 }
 
 $multa = $res->fetch_assoc();
+$dni = $multa['dni'];
+$monto = $multa['monto'];
+$fecha_generada = $multa['fecha_generada'];
+$estado = $multa['estado'];
 
-if ($multa['estado'] === 'Pagada') {
+if ($estado === 'Pagada') {
     die("La multa ya está pagada.");
 }
 
@@ -32,19 +37,25 @@ $stmt->bind_param("i", $id_multa);
 $stmt->execute();
 $stmt->close();
 
-// Crear PDF con FPDF
+// Generar comprobante PDF
 $pdf = new FPDF();
 $pdf->AddPage();
 
-// Encabezado del comprobante
-$pdf->SetFont('Helvetica', 'B', 16);
+// ✅ Cambiamos helvetica por Arial (fuente incluida por defecto)
+$pdf->SetFont('Arial', 'B', 16);
 $pdf->Cell(0, 10, 'Comprobante de Pago de Multa', 0, 1, 'C');
 $pdf->Ln(10);
 
-$pdf->SetFont('Helvetica', '', 12);
-$pdf->Cell(0, 10, "DNI del socio: " . $multa['dni'], 0, 1);
-$pdf->Cell(0, 10, "Monto pagado: $" . $multa['monto'], 0, 1);
+$pdf->SetFont('Arial', '', 12);
+$pdf->Cell(0, 10, "DNI del socio: $dni", 0, 1);
+$pdf->Cell(0, 10, "Monto pagado: $" . number_format($monto, 2, ',', '.'), 0, 1);
+$pdf->Cell(0, 10, "Fecha de generación: $fecha_generada", 0, 1);
 $pdf->Cell(0, 10, "Fecha de pago: " . date('d/m/Y'), 0, 1);
 
+$pdf->Ln(10);
+$pdf->SetFont('Arial', 'I', 10);
+$pdf->Cell(0, 10, 'Gracias por regularizar su situación. Biblioteca Pública', 0, 1, 'C');
+
+// Mostrar el PDF en el navegador
 $pdf->Output('I', 'Comprobante_Pago_Multa.pdf');
 ?>
