@@ -1,61 +1,89 @@
-
 <?php
-require_once __DIR__ . "/../scripts/conexion.php";
-require_once __DIR__ . "/../scripts/fpdf.php";
+require('../scripts/fpdf.php');
+include('../scripts/conexion.php');
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST' || empty($_POST['id_multa'])) {
-    die("Acceso inválido");
+// Verificar si el acceso viene desde un formulario (POST)
+if ($_SERVER["REQUEST_METHOD"] != "POST") {
+    echo "⚠️ Acceso inválido. Este archivo debe ejecutarse desde el formulario de pago.";
+    exit;
 }
 
-$id_multa = (int)$_POST['id_multa'];
+// Obtener datos del formulario
+$id_multa = $_POST['id_multa'] ?? 0;
+$fecha_pago = date('Y-m-d');
 
-// Consultar la multa
-$stmt = $conn->prepare("SELECT dni, monto, fecha_generada, estado FROM multas WHERE id_multa = ?");
-$stmt->bind_param("i", $id_multa);
-$stmt->execute();
-$res = $stmt->get_result();
-
-if ($res->num_rows === 0) {
-    die("Multa no encontrada.");
+// Verificar que se haya recibido el ID de multa
+if ($id_multa == 0) {
+    echo "❌ Error: falta el ID de la multa.";
+    exit;
 }
 
-$multa = $res->fetch_assoc();
-$dni = $multa['dni'];
-$monto = $multa['monto'];
-$fecha_generada = $multa['fecha_generada'];
-$estado = $multa['estado'];
+// Registrar el pago en la base de datos
+$sql = "UPDATE multas SET estado = 'Pagada', fecha_pago = '$fecha_pago' WHERE id_multa = $id_multa";
 
-if ($estado === 'Pagada') {
-    die("La multa ya está pagada.");
+if ($conn->query($sql) === TRUE) {
+
+    // Obtener datos de la multa, el socio y el libro
+    $sql_detalle = "
+        SELECT 
+            m.id_multa, 
+            m.monto, 
+            m.fecha_generada, 
+            s.nombre AS nombre_socio, 
+            s.apellido AS apellido_socio, 
+            t.nombre AS libro
+        FROM multas m
+        INNER JOIN prestamos p ON m.id_prestamo = p.id_prestamo
+        INNER JOIN socios s ON m.dni = s.dni
+        INNER JOIN ejemplares e ON p.id_ejemplar = e.id_ejemplar
+        INNER JOIN titulos t ON e.isbn = t.isbn
+        WHERE m.id_multa = $id_multa
+    ";
+
+    $resultado = $conn->query($sql_detalle);
+
+    if ($resultado && $resultado->num_rows > 0) {
+        $datos = $resultado->fetch_assoc();
+
+        // Crear PDF de comprobante
+        $pdf = new FPDF();
+        $pdf->AddPage();
+
+        // Título del comprobante
+        $pdf->SetFont('Arial', 'B', 16);
+        $pdf->Cell(0, 10, 'Comprobante de Pago de Multa', 0, 1, 'C');
+        $pdf->Ln(10);
+
+        // Datos del socio y multa
+        $pdf->SetFont('Arial', '', 12);
+        $pdf->Cell(50, 10, 'Socio:', 0, 0);
+        $pdf->Cell(0, 10, utf8_decode($datos['nombre_socio'] . ' ' . $datos['apellido_socio']), 0, 1);
+
+        $pdf->Cell(50, 10, 'Libro:', 0, 0);
+        $pdf->Cell(0, 10, utf8_decode($datos['libro']), 0, 1);
+
+        $pdf->Cell(50, 10, 'Fecha de Multa:', 0, 0);
+        $pdf->Cell(0, 10, $datos['fecha_generada'], 0, 1);
+
+        $pdf->Cell(50, 10, 'Monto Pagado:', 0, 0);
+        $pdf->Cell(0, 10, '$' . number_format($datos['monto'], 2, ',', '.'), 0, 1);
+
+        $pdf->Cell(50, 10, 'Fecha de Pago:', 0, 0);
+        $pdf->Cell(0, 10, $fecha_pago, 0, 1);
+
+        $pdf->Ln(10);
+        $pdf->Cell(0, 10, 'Gracias por mantener su cuenta al día.', 0, 1, 'C');
+
+        // Mostrar el PDF
+        $pdf->Output('I', 'comprobante_pago_' . $id_multa . '.pdf');
+
+    } else {
+        echo "⚠️ No se encontraron datos de la multa o del socio.";
+    }
+
+} else {
+    echo "❌ Error al registrar pago: " . $conn->error;
 }
 
-$stmt->close();
-
-// Actualizar el estado a "Pagada"
-$stmt = $conn->prepare("UPDATE multas SET estado = 'Pagada', fecha_pago = CURDATE() WHERE id_multa = ?");
-$stmt->bind_param("i", $id_multa);
-$stmt->execute();
-$stmt->close();
-
-// Generar comprobante PDF
-$pdf = new FPDF();
-$pdf->AddPage();
-
-// ✅ Cambiamos helvetica por Arial (fuente incluida por defecto)
-$pdf->SetFont('Arial', 'B', 16);
-$pdf->Cell(0, 10, 'Comprobante de Pago de Multa', 0, 1, 'C');
-$pdf->Ln(10);
-
-$pdf->SetFont('Arial', '', 12);
-$pdf->Cell(0, 10, "DNI del socio: $dni", 0, 1);
-$pdf->Cell(0, 10, "Monto pagado: $" . number_format($monto, 2, ',', '.'), 0, 1);
-$pdf->Cell(0, 10, "Fecha de generación: $fecha_generada", 0, 1);
-$pdf->Cell(0, 10, "Fecha de pago: " . date('d/m/Y'), 0, 1);
-
-$pdf->Ln(10);
-$pdf->SetFont('Arial', 'I', 10);
-$pdf->Cell(0, 10, 'Gracias por regularizar su situación. Biblioteca Pública', 0, 1, 'C');
-
-// Mostrar el PDF en el navegador
-$pdf->Output('I', 'Comprobante_Pago_Multa.pdf');
+$conn->close();
 ?>
