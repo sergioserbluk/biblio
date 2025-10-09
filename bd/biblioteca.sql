@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 08-10-2025 a las 21:43:38
+-- Tiempo de generación: 09-10-2025 a las 16:49:33
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -87,9 +87,9 @@ CREATE TABLE `ejemplares` (
 
 INSERT INTO `ejemplares` (`id_ejemplar`, `isbn`, `disponible`, `disponibe`, `estado`, `observacion`) VALUES
 (1, '978-84-376-0494-9', 1, 1, 'activo', 'Sin observaciones'),
-(2, '978-950-511-308-7', 1, 1, 'activo', 'Copia en perfecto estado'),
-(3, '978-987-1138-37-1', 1, 0, 'bajo', 'Cubierta desgastada'),
-(4, '978-950-07-2253-5', 1, 1, 'activo', 'Nuevo ingreso'),
+(2, '978-950-511-308-7', 0, 1, 'activo', 'Copia en perfecto estado'),
+(3, '978-987-1138-37-1', 0, 0, 'bajo', 'Cubierta desgastada'),
+(4, '978-950-07-2253-5', 0, 1, 'activo', 'Nuevo ingreso'),
 (5, '978-84-375-1000-1', 1, 1, 'activo', 'Páginas sueltas');
 
 -- --------------------------------------------------------
@@ -118,6 +118,29 @@ INSERT INTO `generos` (`id_genero`, `nombre`, `descripcion`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `multas`
+--
+
+CREATE TABLE `multas` (
+  `id_multa` int(11) NOT NULL,
+  `dni` varchar(20) NOT NULL,
+  `id_prestamo` int(11) DEFAULT NULL,
+  `monto` decimal(10,2) NOT NULL,
+  `fecha_generada` date NOT NULL,
+  `estado` enum('Pendiente','Pagada') DEFAULT 'Pendiente',
+  `fecha_pago` date DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `multas`
+--
+
+INSERT INTO `multas` (`id_multa`, `dni`, `id_prestamo`, `monto`, `fecha_generada`, `estado`, `fecha_pago`) VALUES
+(1, '44556677', 3, 2500.00, '2025-10-08', 'Pagada', '2025-10-09');
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `prestamos`
 --
 
@@ -135,11 +158,13 @@ CREATE TABLE `prestamos` (
 --
 
 INSERT INTO `prestamos` (`id_prestamo`, `dni`, `fecha_prestamo`, `id_ejemplar`, `fecha_devolucion`, `devuelto`) VALUES
-(1, '12345678', '2025-09-01', 1, '2025-09-15', 1),
+(1, '12345678', '2025-10-08', 2, '2025-10-23', 0),
 (2, '22334455', '2025-09-05', 2, '2025-09-19', 0),
-(3, '44556677', '2025-09-10', 3, '2025-09-24', 0),
+(3, '44556677', '2025-09-09', 3, '2025-09-19', 0),
 (4, '55667788', '2025-09-12', 4, '2025-09-26', 1),
-(5, '33445566', '2025-09-15', 5, '2025-09-29', 0);
+(5, '33445566', '2025-09-15', 5, '2025-09-29', 0),
+(6, '44556677', '2025-10-09', 3, '2025-10-24', 0),
+(7, '12345678', '2025-10-09', 4, '2025-10-24', 0);
 
 -- --------------------------------------------------------
 
@@ -251,6 +276,13 @@ ALTER TABLE `generos`
   ADD PRIMARY KEY (`id_genero`);
 
 --
+-- Indices de la tabla `multas`
+--
+ALTER TABLE `multas`
+  ADD PRIMARY KEY (`id_multa`),
+  ADD KEY `multas_ibfk_1` (`id_prestamo`);
+
+--
 -- Indices de la tabla `prestamos`
 --
 ALTER TABLE `prestamos`
@@ -282,6 +314,22 @@ ALTER TABLE `titulosyautores`
   ADD KEY `isbn` (`isbn`);
 
 --
+-- AUTO_INCREMENT de las tablas volcadas
+--
+
+--
+-- AUTO_INCREMENT de la tabla `multas`
+--
+ALTER TABLE `multas`
+  MODIFY `id_multa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT de la tabla `prestamos`
+--
+ALTER TABLE `prestamos`
+  MODIFY `id_prestamo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
 -- Restricciones para tablas volcadas
 --
 
@@ -290,6 +338,12 @@ ALTER TABLE `titulosyautores`
 --
 ALTER TABLE `ejemplares`
   ADD CONSTRAINT `ejemplares_ibfk_1` FOREIGN KEY (`isbn`) REFERENCES `titulos` (`isbn`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `multas`
+--
+ALTER TABLE `multas`
+  ADD CONSTRAINT `multas_ibfk_1` FOREIGN KEY (`id_prestamo`) REFERENCES `prestamos` (`id_prestamo`) ON DELETE CASCADE;
 
 --
 -- Filtros para la tabla `prestamos`
