@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 09-10-2025 a las 22:42:59
+-- Tiempo de generación: 16-10-2025 a las 22:46:01
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -136,8 +136,8 @@ CREATE TABLE `multas` (
 --
 
 INSERT INTO `multas` (`id_multa`, `dni`, `id_prestamo`, `monto`, `fecha_generada`, `estado`, `fecha_pago`) VALUES
-(1, '44556677', 3, 2500.00, '2025-10-08', 'Pendiente', '2025-10-09'),
-(2, '44556677', 3, 2000.00, '2025-10-09', 'Pagada', NULL);
+(1, '44556677', 3, 2500.00, '2025-10-08', 'Pendiente', '2025-10-16'),
+(2, '44556677', 3, 2000.00, '2025-10-09', 'Pendiente', '2025-10-16');
 
 -- --------------------------------------------------------
 
@@ -165,9 +165,46 @@ INSERT INTO `prestamos` (`id_prestamo`, `dni`, `fecha_prestamo`, `id_ejemplar`, 
 (3, '44556677', '2025-09-09', 3, '2025-09-19', '2025-10-09', 1),
 (4, '55667788', '2025-09-12', 4, '2025-09-26', NULL, 1),
 (5, '33445566', '2025-09-15', 5, '2025-09-29', NULL, 0),
-(6, '44556677', '2025-10-09', 3, '2025-10-24', NULL, 0),
+(6, '44556677', '2025-10-09', 3, '2025-11-08', NULL, 0),
 (7, '12345678', '2025-10-09', 4, '2025-10-24', NULL, 0),
 (8, '55667788', '2025-10-09', 1, '2025-10-24', NULL, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `renovaciones`
+--
+
+CREATE TABLE `renovaciones` (
+  `id_renovacion` int(11) NOT NULL,
+  `id_prestamo` int(11) NOT NULL,
+  `dni` varchar(20) NOT NULL,
+  `fecha_renovacion` date NOT NULL,
+  `fecha_vieja` date NOT NULL,
+  `fecha_nueva` date NOT NULL,
+  `observacion` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `renovaciones`
+--
+
+INSERT INTO `renovaciones` (`id_renovacion`, `id_prestamo`, `dni`, `fecha_renovacion`, `fecha_vieja`, `fecha_nueva`, `observacion`) VALUES
+(1, 6, '44556677', '2025-10-16', '2025-10-24', '2025-11-08', 'Renovación automática +15 días');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `reservas`
+--
+
+CREATE TABLE `reservas` (
+  `id_reserva` int(11) NOT NULL,
+  `dni` varchar(20) NOT NULL,
+  `id_ejemplar` int(11) NOT NULL,
+  `fecha_reserva` date NOT NULL,
+  `estado` enum('Activa','Atendida','Cancelada') DEFAULT 'Activa'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -294,6 +331,20 @@ ALTER TABLE `prestamos`
   ADD KEY `id_ejemplar` (`id_ejemplar`);
 
 --
+-- Indices de la tabla `renovaciones`
+--
+ALTER TABLE `renovaciones`
+  ADD PRIMARY KEY (`id_renovacion`),
+  ADD KEY `id_prestamo` (`id_prestamo`);
+
+--
+-- Indices de la tabla `reservas`
+--
+ALTER TABLE `reservas`
+  ADD PRIMARY KEY (`id_reserva`),
+  ADD KEY `id_ejemplar` (`id_ejemplar`);
+
+--
 -- Indices de la tabla `socios`
 --
 ALTER TABLE `socios`
@@ -333,6 +384,18 @@ ALTER TABLE `prestamos`
   MODIFY `id_prestamo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
+-- AUTO_INCREMENT de la tabla `renovaciones`
+--
+ALTER TABLE `renovaciones`
+  MODIFY `id_renovacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT de la tabla `reservas`
+--
+ALTER TABLE `reservas`
+  MODIFY `id_reserva` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- Restricciones para tablas volcadas
 --
 
@@ -354,6 +417,18 @@ ALTER TABLE `multas`
 ALTER TABLE `prestamos`
   ADD CONSTRAINT `prestamos_ibfk_1` FOREIGN KEY (`dni`) REFERENCES `socios` (`dni`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `prestamos_ibfk_2` FOREIGN KEY (`id_ejemplar`) REFERENCES `ejemplares` (`id_ejemplar`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `renovaciones`
+--
+ALTER TABLE `renovaciones`
+  ADD CONSTRAINT `renovaciones_ibfk_1` FOREIGN KEY (`id_prestamo`) REFERENCES `prestamos` (`id_prestamo`) ON DELETE CASCADE;
+
+--
+-- Filtros para la tabla `reservas`
+--
+ALTER TABLE `reservas`
+  ADD CONSTRAINT `reservas_ibfk_1` FOREIGN KEY (`id_ejemplar`) REFERENCES `ejemplares` (`id_ejemplar`) ON DELETE CASCADE;
 
 --
 -- Filtros para la tabla `titulos`
